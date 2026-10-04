@@ -669,10 +669,12 @@ html[lang="hi"] .faq-q, html[lang="mr"] .faq-q{ font-family:var(--font-body); fo
   }
   .primary-nav.is-open{ transform:translateY(0); opacity:1; visibility:visible; }
   .primary-nav > a{ padding:13px 14px; font-size:1rem; border-radius:10px; }
-  .nav-mobile-extra{ display:block; margin-top:14px; padding-top:16px; border-top:1px solid var(--line); }
   .nav-toggle{ display:grid; }
   .header-actions{ margin-left:auto; }
-  .lang-switch--inline{ display:none; }
+  .header-actions{ gap:8px; }
+  .lang-switch--inline .lang-btn{ padding:6px 9px; font-size:.78rem; }
+  /* the stacked copy inside the hamburger menu is redundant now */
+  .nav-mobile-extra{ display:none; }
   .calc{ grid-template-columns:1fr; }
   .trust-grid{ grid-template-columns:1fr; }
 }
