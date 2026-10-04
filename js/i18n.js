@@ -48,7 +48,7 @@ en: {
 
   /* --- Section 2: Hero ---------------------------------------------------- */
   "hero.eyebrow": "Phase 1 — Where most plans stall",
-  "hero.h1": "Working Hard Every Month, But Still Not Moving Closer to Your Financial Goals?",
+  "hero.h1": "Want to Be Financially Free Early? Start Your SIP Journey Today.",
   "hero.sub": "Your income may be growing, but without a clear savings and investment plan, important goals can feel further away than expected.",
   "hero.p1": "Money gets spent before meaningful savings begin.",
   "hero.p2": "Financial goals remain vague, with no clear monthly investment plan.",
@@ -355,7 +355,7 @@ hi: {
   "phase.3.name": "योजना",
 
   "hero.eyebrow": "चरण 1 — यहीं अधिकतर योजनाएँ रुक जाती हैं",
-  "hero.h1": "हर महीने कड़ी मेहनत, फिर भी अपने वित्तीय लक्ष्यों के क़रीब नहीं पहुँच पा रहे हैं?",
+  "hero.h1": "जल्दी आर्थिक आज़ादी चाहते हैं? आज ही अपनी एसआईपी यात्रा शुरू करें।",
   "hero.sub": "आपकी आय बढ़ रही हो सकती है, लेकिन बचत और निवेश की स्पष्ट योजना के बिना ज़रूरी लक्ष्य उम्मीद से कहीं दूर महसूस हो सकते हैं।",
   "hero.p1": "सार्थक बचत शुरू होने से पहले ही पैसा ख़र्च हो जाता है।",
   "hero.p2": "वित्तीय लक्ष्य अस्पष्ट रह जाते हैं और मासिक निवेश की कोई स्पष्ट योजना नहीं होती।",
@@ -649,7 +649,7 @@ mr: {
   "phase.3.name": "नियोजन",
 
   "hero.eyebrow": "टप्पा 1 — इथेच बहुतेक नियोजन थांबते",
-  "hero.h1": "दर महिन्याला कष्ट करूनही तुमची आर्थिक उद्दिष्टे जवळ येत नाहीत का?",
+  "hero.h1": "लवकर आर्थिक स्वातंत्र्य हवे आहे? आजच तुमचा एसआयपी प्रवास सुरू करा.",
   "hero.sub": "तुमचे उत्पन्न वाढत असेलही, पण बचत आणि गुंतवणुकीच्या स्पष्ट नियोजनाशिवाय महत्त्वाची उद्दिष्टे अपेक्षेपेक्षा दूर वाटू शकतात.",
   "hero.p1": "अर्थपूर्ण बचत सुरू होण्याआधीच पैसे खर्च होऊन जातात.",
   "hero.p2": "आर्थिक उद्दिष्टे अस्पष्ट राहतात आणि मासिक गुंतवणुकीचे स्पष्ट नियोजन नसते.",

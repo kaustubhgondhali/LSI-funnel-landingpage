@@ -56,7 +56,7 @@ async function boot(configPatch) {
   let w = dom.window, d = w.document, $ = s => d.querySelector(s);
 
   check("html lang is en", d.documentElement.lang === "en", d.documentElement.lang);
-  check("h1 rendered in English", /Working Hard Every Month/.test($("h1").textContent));
+  check("h1 rendered in English", /Financially Free Early/.test($("h1").textContent));
   check("total invested = ₹6,00,000", $("#outInvested").textContent === "₹6,00,000", $("#outInvested").textContent);
   check("illustrative value = ₹9,14,730 (end-of-month)", $("#outValue").textContent === "₹9,14,730", $("#outValue").textContent);
   check("gains = ₹3,14,730", $("#outGains").textContent === "₹3,14,730", $("#outGains").textContent);
@@ -122,7 +122,7 @@ async function boot(configPatch) {
   check("mr h1 differs from hi h1", /[ऀ-ॿ]/.test($("h1").textContent));
   check("mr risk disclosure present", /बाजार जोखमीच्या अधीन/.test(d.querySelector(".foot-risk p").textContent));
   d.querySelector('.lang-btn[data-lang="en"]').click();
-  check("back to en", d.documentElement.lang === "en" && /Working Hard/.test($("h1").textContent));
+  check("back to en", d.documentElement.lang === "en" && /Financially Free/.test($("h1").textContent));
 
   /* ---------------------------------------------------------------- */
   console.log("\n[5] FAQ accordion");
