@@ -26,12 +26,12 @@ python3 -m http.server 8000
 
 ```
 lord-sai-sip/
-├── index.html                      the whole page (all 14 sections)
+├── index.html                      the whole page (all 15 sections)
 ├── css/
 │   └── styles.css                  all styling, brand tokens at the top
 ├── js/
 │   ├── config.js                   ← THE ONLY FILE YOU NEED TO EDIT
-│   ├── i18n.js                     en / hi / mr dictionary (269 keys each)
+│   ├── i18n.js                     en / hi / mr dictionary (303 keys each)
 │   └── main.js                     calculator, language switch, FAQ, form
 ├── assets/
 │   ├── lord-sai-secondary.jpg      original supplied file, unmodified
@@ -100,6 +100,11 @@ nothing was sent or stored. That is intentional — it is not a bug.
 `contactPhone`, `contactEmail`, `contactAddress`, `privacyPolicyUrl`, `termsUrl`.
 Anything left empty is **hidden rather than faked** — the footer will not show a
 phone number you have not supplied, and will not link to a policy page that does not exist.
+
+`growth` sets the SIP growth illustration under the hero (assumed return, yearly
+step-up, and the amount/duration shown first) — keep `rate` and `stepUp` equal to the
+printed chart. `distributor` sets the name, ARN and mobile shown beneath it; an empty
+field is not rendered.
 
 ---
 
@@ -174,8 +179,25 @@ label, the formula shown and the maths all change together, so the two can never
 apart. The same function drives the compounding comparison, so the two sections cannot
 contradict each other.
 
-Defaults are deliberately conservative (₹5,000 / 10 years / 8%). Please do not raise the
-default return to make the numbers look better — the inputs are the visitor's to set.
+Defaults are ₹5,000 / 10 years / 12% — the same assumed return as the printed SIP chart.
+They are set by the `value` attributes on the calculator inputs in `index.html`; every
+input remains the visitor's to change.
+
+### The SIP growth illustration (under the hero)
+
+This section reproduces the printed “SIP Wealth Creation Illustration” chart
+(12% p.a., 10% yearly step-up) and uses **the chart's own method**, so the page and the
+poster show identical figures:
+
+- the assumed rate is an *effective* annual rate — monthly rate `i = (1 + r)^(1/12) − 1`
+- each instalment is invested at the **start** of the month
+- with step-up, the monthly amount rises by the step-up % every 12 months
+
+That is a different convention from the calculator above, and it gives slightly lower
+figures at the same rate. The section's assumption line says so in all three languages.
+Every figure is calculated, not typed in — two cells in the printed chart's
+“SIP annual step-up” column (₹10,000 × 10 yrs and ₹15,000 × 20 yrs) repeat the invested
+amount by mistake; the page shows the correct gains.
 
 ---
 
@@ -185,6 +207,9 @@ default return to make the numbers look better — the inputs are the visitor's 
 node tests/calculator.test.js     # no dependencies
 python3 tests/reference.py        # independent cross-check of the maths
 ```
+
+`reference.py` also checks all 30 rows of the printed step-up chart against an
+independent Decimal implementation of the illustration's method.
 
 `tests/integration.test.js` loads the real page and scripts in a DOM and exercises
 language switching, the calculator, the FAQ and every form path. It needs jsdom:

@@ -58,8 +58,8 @@ async function boot(configPatch) {
   check("html lang is en", d.documentElement.lang === "en", d.documentElement.lang);
   check("h1 rendered in English", /Financially Free Early/.test($("h1").textContent));
   check("total invested = ₹6,00,000", $("#outInvested").textContent === "₹6,00,000", $("#outInvested").textContent);
-  check("illustrative value = ₹9,14,730 (end-of-month)", $("#outValue").textContent === "₹9,14,730", $("#outValue").textContent);
-  check("gains = ₹3,14,730", $("#outGains").textContent === "₹3,14,730", $("#outGains").textContent);
+  check("illustrative value = ₹11,50,193 (end-of-month, 12%)", $("#outValue").textContent === "₹11,50,193", $("#outValue").textContent);
+  check("gains = ₹5,50,193", $("#outGains").textContent === "₹5,50,193", $("#outGains").textContent);
   check("scale cue uses lakh", /lakh/.test($("#outValueWords").textContent), $("#outValueWords").textContent);
   check("donut dasharray set", /^[\d.]+ [\d.]+$/.test($("#donutGain").getAttribute("stroke-dasharray")), $("#donutGain").getAttribute("stroke-dasharray"));
   check("timing stated as end-of-month", /end of the month/.test($("#calcTiming").textContent));

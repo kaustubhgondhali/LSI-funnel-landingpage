@@ -52,5 +52,40 @@ for (var a = 500; a <= 50000; a += 2450) {
 }
 console.log("\n  Invariant sweep over the full input range: " +
             (invariantFails === 0 ? "PASS" : invariantFails + " failures"));
+
+/* Step-up illustration — same function as js/main.js (stepUpSip) */
+function stepUpSip(monthly, years, annualRatePct, stepUpPct) {
+  var i = Math.pow(1 + annualRatePct / 100, 1 / 12) - 1;
+  var grow = 1 + (stepUpPct || 0) / 100;
+  var value = 0, invested = 0, m = monthly;
+  for (var y = 0; y < years; y++) {
+    for (var k = 0; k < 12; k++) { value = (value + m) * (1 + i); invested += m; }
+    m *= grow;
+  }
+  return { invested: invested, value: value };
+}
+
+/* Rows of the printed chart at 12% p.a. / 10% step-up (all 30 are checked in
+   tests/reference.py): monthly, years, flat value, step-up invested, step-up value */
+var poster = [
+  [2000, 5, 162207, 146522, 193836],
+  [2000, 30, 6161946, 3947857, 15971553],
+  [5000, 15, 2379657, 1906349, 4137359],
+  [10000, 10, 2240359, 1912491, 3268898],
+  [10000, 20, 9198574, 6873000, 18631383],
+  [15000, 20, 13797860, 10309500, 27947075],
+  [20000, 25, 34044131, 23603294, 78710036],
+  [20000, 30, 61619464, 39478565, 159715526]
+];
+console.log("");
+poster.forEach(function (c) {
+  var flat = stepUpSip(c[0], c[1], 12, 0), up = stepUpSip(c[0], c[1], 12, 10);
+  var got = [Math.round(flat.value), Math.round(up.invested), Math.round(up.value)];
+  var ok = got.every(function (g, idx) { return Math.abs(g - c[2 + idx]) <= 1; });
+  console.log((ok ? "  PASS  " : "  FAIL  ") + "step-up ₹" + c[0] + "/mo, " + c[1] + "y  → " +
+              got.join(" / ") + (ok ? "" : "   expected " + c.slice(2).join(" / ")));
+  ok ? pass++ : fail++;
+});
+
 console.log("\n  " + pass + " passed, " + fail + " failed");
 process.exit(fail === 0 && invariantFails === 0 ? 0 : 1);

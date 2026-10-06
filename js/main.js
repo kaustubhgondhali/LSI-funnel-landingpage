@@ -67,6 +67,7 @@
     /* Re-render anything whose text is generated, not static.
        Calculator inputs and form values are untouched — only labels change. */
     renderCalculator();
+    renderReturns();
     renderCopyright();
     renderContact();
 
@@ -256,6 +257,246 @@
       });
     });
     renderCalculator();
+  }
+
+  /* ===========================================================================
+     3b. SIP GROWTH ILLUSTRATION  (the printed 12% / 10% step-up chart)
+     ---------------------------------------------------------------------------
+     Reproduces the printed chart's method exactly, so the page and the poster
+     always show the same figures:
+       • the assumed annual rate is an EFFECTIVE annual rate,
+             monthly rate i = (1 + r)^(1/12) − 1
+       • each instalment is invested at the START of the month
+       • with step-up, the monthly amount rises by stepUpPct every 12 months
+     This is a different convention from the calculator (nominal rate ÷ 12,
+     end of month), which the section's assumption line states plainly.
+     ======================================================================== */
+  function stepUpSip(monthly, years, annualRatePct, stepUpPct) {
+    var i = Math.pow(1 + annualRatePct / 100, 1 / 12) - 1;
+    var grow = 1 + (stepUpPct || 0) / 100;
+    var value = 0, invested = 0, m = monthly;
+    for (var y = 0; y < years; y++) {
+      for (var k = 0; k < 12; k++) { value = (value + m) * (1 + i); invested += m; }
+      m *= grow;
+    }
+    return { invested: invested, value: value };
+  }
+
+  var rt = { ready: false, amount: 0, years: 0, seenTiles: false, seenPanel: false };
+  var reduceMotion = !!(window.matchMedia && window.matchMedia("(prefers-reduced-motion: reduce)").matches);
+
+  function growthAssumptions() {
+    var g = CFG.growth || {};
+    return {
+      rate: typeof g.rate   === "number" ? g.rate   : 12,
+      step: typeof g.stepUp === "number" ? g.stepUp : 10
+    };
+  }
+
+  /* Compact "₹1.60 crore" formatter. The unit is fixed by the final figure,
+     so a count-up does not jump between lakh and crore on the way. */
+  function compactFor(target) {
+    var crore = target >= 10000000;
+    var div = crore ? 10000000 : 100000, unit = t(crore ? "calc.unit.crore" : "calc.unit.lakh");
+    return function (n) { return "₹" + (n / div).toFixed(2) + " " + unit; };
+  }
+
+  /* Count a figure up from its previous value. Until its block has scrolled
+     into view it holds at zero, so the count-up is what the visitor sees. */
+  function countTo(el, to, fmt, seen) {
+    if (!el) return;
+    to = Math.round(to);
+    if (el._raf) window.cancelAnimationFrame(el._raf);
+    clearTimeout(el._settle);
+    if (!seen) { el.setAttribute("data-val", "0"); el.textContent = fmt(0); return; }
+    var from = parseFloat(el.getAttribute("data-val"));
+    el.setAttribute("data-val", String(to));
+    if (reduceMotion || isNaN(from) || from === to || !window.requestAnimationFrame) {
+      el.textContent = fmt(to);
+      return;
+    }
+    var start = Date.now(), dur = 900;
+    function frame() {
+      var p = Math.min(1, (Date.now() - start) / dur), eased = 1 - Math.pow(1 - p, 3);
+      el.textContent = fmt(from + (to - from) * eased);
+      if (p < 1) el._raf = window.requestAnimationFrame(frame);
+    }
+    el._raf = window.requestAnimationFrame(frame);
+    /* Frames can be throttled (background tab), so the final figure never depends on them */
+    el._settle = setTimeout(function () {
+      window.cancelAnimationFrame(el._raf);
+      el.textContent = fmt(to);
+    }, dur + 100);
+  }
+
+  /* Fill a translated sentence, showing the value for `token` in bold */
+  function fillBold(el, template, token, value) {
+    if (!el) return;
+    el.textContent = "";
+    template.split(token).forEach(function (part, idx) {
+      if (idx > 0) { var b = document.createElement("b"); b.textContent = value; el.appendChild(b); }
+      if (part) el.appendChild(document.createTextNode(part));
+    });
+  }
+
+  function rtYearsList() {
+    return $$("#rtYears .rt-chip").map(function (c) { return +c.getAttribute("data-years"); });
+  }
+
+  function renderRtRow(row, res, max) {
+    if (!row) return;
+    var inv = Math.round(res.invested), val = Math.round(res.value), gain = val - inv;
+    $(".rt-val", row).textContent  = money(val);
+    $(".rt-inv", row).textContent  = money(inv);
+    $(".rt-gain", row).textContent = money(gain);
+    $(".cmp-seg--inv", row).style.width  = rt.seenPanel ? (inv  / max * 100).toFixed(2) + "%" : "0%";
+    $(".cmp-seg--gain", row).style.width = rt.seenPanel ? (gain / max * 100).toFixed(2) + "%" : "0%";
+  }
+
+  function rtCell(tr, text, res, cls) {
+    var td = document.createElement("td");
+    td.textContent = text;
+    if (cls) td.className = cls;
+    if (res) {
+      var sm = document.createElement("small");
+      sm.textContent = t("returns.gainSub", { amount: money(Math.round(res.value) - Math.round(res.invested)) });
+      td.appendChild(sm);
+    }
+    tr.appendChild(td);
+  }
+
+  function renderReturns() {
+    if (!rt.ready) return;
+    var g = growthAssumptions(), a = rt.amount, y = rt.years;
+    var vars = { rate: g.rate, step: g.step };
+    var flat = stepUpSip(a, y, g.rate, 0), up = stepUpSip(a, y, g.rate, g.step);
+
+    $("#rtLead").textContent = t("returns.lead", vars);
+
+    /* Highlight tiles */
+    $$(".rt-tile").forEach(function (tile) {
+      var ta = +tile.getAttribute("data-amount"), ty = +tile.getAttribute("data-years");
+      var value = stepUpSip(ta, ty, g.rate, g.step).value;
+      $(".rt-tile-per", tile).textContent = t("returns.tile.per", { amount: money(ta) });
+      $(".rt-tile-sub", tile).textContent = t("returns.tile.sub", { years: ty, step: g.step });
+      countTo($(".rt-tile-val", tile), value, compactFor(value), rt.seenTiles);
+      tile.setAttribute("aria-pressed", String(ta === a && ty === y));
+    });
+
+    /* Amount and duration buttons */
+    $$("#rtAmounts .rt-chip").forEach(function (c) {
+      c.setAttribute("aria-pressed", String(+c.getAttribute("data-amount") === a));
+    });
+    $$("#rtYears .rt-chip").forEach(function (c) {
+      var cy = +c.getAttribute("data-years");
+      c.textContent = t("returns.years.chip", { years: cy });
+      c.setAttribute("aria-pressed", String(cy === y));
+    });
+
+    /* Headline figure and the step-up advantage */
+    $("#rtHeroLabel").textContent = t("returns.hero.label", vars);
+    countTo($("#rtHeroVal"), up.value, money, rt.seenPanel);
+    $("#rtHeroWords").textContent = rt.seenPanel ? words(up.value) : " ";
+    fillBold($("#rtExtra"), t("returns.extra"), "{amount}",
+             "+" + money(Math.round(up.value) - Math.round(flat.value)));
+
+    /* Regular vs step-up bars, both scaled to the larger value */
+    $("#rtFor").textContent       = t("returns.for", { amount: money(a), years: y });
+    $("#rtFlatLabel").textContent = t("returns.flat.label");
+    $("#rtStepLabel").textContent = t("returns.step.label", vars);
+    renderRtRow($("#rtFlat"), flat, up.value);
+    renderRtRow($("#rtStep"), up,   up.value);
+
+    /* Every duration for the chosen amount — the printed chart's block for it */
+    $("#rtTableTitle").textContent = t("returns.table.title", { amount: money(a) });
+    $("#rtThFlat").textContent     = t("returns.flat.short");
+    $("#rtThStep").textContent     = t("returns.step.short", vars);
+    var body = $("#rtBody");
+    body.textContent = "";
+    rtYearsList().forEach(function (yy) {
+      var f = stepUpSip(a, yy, g.rate, 0), s = stepUpSip(a, yy, g.rate, g.step);
+      var tr = document.createElement("tr");
+      tr.setAttribute("data-years", yy);
+      if (yy === y) tr.className = "is-selected";
+      rtCell(tr, t("comp.years", { years: yy }));
+      rtCell(tr, money(f.invested));
+      rtCell(tr, money(f.value), f);
+      rtCell(tr, money(s.invested));
+      rtCell(tr, money(s.value), s, "rt-td-step");
+      body.appendChild(tr);
+    });
+
+    $("#rtAssume").textContent     = t("returns.assume", vars);
+    $("#rtDisclaimer").textContent = t("returns.disclaimer", vars);
+
+    /* Distributor strip — config-driven, hidden when not configured */
+    var d = CFG.distributor || {}, dist = $("#rtDist");
+    if (dist) {
+      dist.hidden = !d.name;
+      $("#rtDistName").textContent  = d.name || "";
+      $("#rtDistBrand").textContent = CFG.brandName || "";
+      var arn = $("#rtDistArn"), ph = $("#rtDistPhone");
+      arn.textContent = d.arn || "";
+      arn.hidden = !d.arn;
+      ph.hidden = !d.phone;
+      if (d.phone) {
+        ph.href = "tel:" + String(d.phone).replace(/\s/g, "");
+        ph.textContent = t("returns.dist.mob") + " " + d.phone;
+      }
+    }
+  }
+
+  function bindReturns() {
+    var section = $("#returns");
+    if (!section) return;
+
+    var g = CFG.growth || {};
+    var amounts = $$("#rtAmounts .rt-chip").map(function (c) { return +c.getAttribute("data-amount"); });
+    var years   = rtYearsList();
+    rt.amount = amounts.indexOf(g.amount) > -1 ? g.amount : amounts[Math.floor(amounts.length / 2)];
+    rt.years  = years.indexOf(g.years)    > -1 ? g.years  : years[Math.floor(years.length / 2)];
+
+    function select(a, y) {
+      if (a) rt.amount = a;
+      if (y) rt.years = y;
+      renderReturns();
+    }
+
+    $$("#rtAmounts .rt-chip").forEach(function (c) {
+      c.addEventListener("click", function () { select(+c.getAttribute("data-amount"), 0); });
+    });
+    $$("#rtYears .rt-chip").forEach(function (c) {
+      c.addEventListener("click", function () { select(0, +c.getAttribute("data-years")); });
+    });
+    $$(".rt-tile").forEach(function (tile) {
+      tile.addEventListener("click", function () {
+        select(+tile.getAttribute("data-amount"), +tile.getAttribute("data-years"));
+      });
+    });
+    $("#rtBody").addEventListener("click", function (e) {
+      var tr = e.target.closest && e.target.closest("tr[data-years]");
+      if (tr) select(0, +tr.getAttribute("data-years"));
+    });
+
+    /* Count-ups start when each block scrolls into view */
+    if (reduceMotion || !("IntersectionObserver" in window)) {
+      rt.seenTiles = rt.seenPanel = true;
+    } else {
+      [[".rt-tiles", "seenTiles"], [".rt", "seenPanel"]].forEach(function (pair) {
+        var target = $(pair[0], section);
+        if (!target) { rt[pair[1]] = true; return; }
+        var io = new IntersectionObserver(function (entries) {
+          if (!entries.some(function (en) { return en.isIntersecting; })) return;
+          io.disconnect();
+          rt[pair[1]] = true;
+          renderReturns();
+        }, { threshold: 0.3 });
+        io.observe(target);
+      });
+    }
+
+    rt.ready = true;
+    renderReturns();
   }
 
   /* ===========================================================================
@@ -620,6 +861,7 @@
   function init() {
     initLanguage();
     bindCalculator();
+    bindReturns();
     bindNav();
     bindScroll();
     bindFaq();
@@ -632,5 +874,5 @@
   else init();
 
   /* Exposed for the test harness in tests/calculator.test.js */
-  window.LS_SIP = { futureValue: sipFutureValue };
+  window.LS_SIP = { futureValue: sipFutureValue, stepUpValue: stepUpSip };
 })();

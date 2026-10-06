@@ -73,20 +73,48 @@ window.LS_CONFIG = {
 
   /* ---------------------------------------------------------------------------
      6. CALCULATOR DEFAULTS
-     Deliberately conservative. Do not raise `rate` to flatter the numbers —
-     it is an illustration, not a projection.
+     The default rate matches the 12% p.a. used on the printed SIP chart.
+     It is an illustration, not a projection — visitors can change it.
+     (The live defaults are the value="" attributes on the inputs in index.html;
+     keep these in step with them.)
   --------------------------------------------------------------------------- */
   calculator: {
     amount:      { min: 500,  max: 50000, step: 500, value: 5000 },
     years:       { min: 1,    max: 30,    step: 1,   value: 10   },
-    rate:        { min: 0,    max: 15,    step: 0.5, value: 8    },
+    rate:        { min: 0,    max: 15,    step: 0.5, value: 12   },
     // "end"  = contribution invested at the END of each month (ordinary annuity)
     // "begin"= contribution invested at the START of each month (annuity due)
     contributionTiming: "end"
   },
 
   /* ---------------------------------------------------------------------------
-     7. LANGUAGE
+     7. SIP GROWTH ILLUSTRATION  (the section under the hero)
+     ---------------------------------------------------------------------------
+     Mirrors the printed Lord Sai "SIP Wealth Creation Illustration" chart.
+     Keep `rate` and `stepUp` equal to the printed chart so the page and the
+     poster always show the same figures. `amount` and `years` pick the
+     combination shown first and must match one of the buttons on the page
+     (₹2,000 / 5,000 / 10,000 / 15,000 / 20,000 and 5–30 years).
+  --------------------------------------------------------------------------- */
+  growth: {
+    rate:   12,      // assumed annual return, % p.a. — an illustration, not a forecast
+    stepUp: 10,      // yearly increase of the monthly SIP, %
+    amount: 10000,
+    years:  20
+  },
+
+  /* ---------------------------------------------------------------------------
+     8. DISTRIBUTOR DETAILS  (shown under the growth illustration)
+     Any field left empty is simply not rendered.
+  --------------------------------------------------------------------------- */
+  distributor: {
+    name:  "Vaibhav S. Pawar",
+    arn:   "ARN-280789",
+    phone: "+91 99202 54354"
+  },
+
+  /* ---------------------------------------------------------------------------
+     9. LANGUAGE
   --------------------------------------------------------------------------- */
   defaultLanguage: "en",     // must be one of: en, hi, mr
   persistLanguage: true      // remembers choice in localStorage only
