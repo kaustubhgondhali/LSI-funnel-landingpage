@@ -49,6 +49,12 @@ window.LS_CONFIG = {
   --------------------------------------------------------------------------- */
   whatsappNumber: "",
 
+  /* WhatsApp CHAT button — the floating green button and the WhatsApp pill
+     under the SIP growth section. Same format: digits only, with country code.
+     Separate from `whatsappNumber` above, which only changes how the enquiry
+     form behaves. Leave as "" to hide the chat buttons. */
+  whatsappChat: "919920254354",
+
   /* ---------------------------------------------------------------------------
      3. PUBLIC CONTACT DETAILS  (optional)
      Any field left empty is simply not rendered. Do not invent values.

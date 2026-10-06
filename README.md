@@ -31,7 +31,7 @@ lord-sai-sip/
 │   └── styles.css                  all styling, brand tokens at the top
 ├── js/
 │   ├── config.js                   ← THE ONLY FILE YOU NEED TO EDIT
-│   ├── i18n.js                     en / hi / mr dictionary (303 keys each)
+│   ├── i18n.js                     en / hi / mr dictionary (315 keys each)
 │   └── main.js                     calculator, language switch, FAQ, form
 ├── assets/
 │   ├── lord-sai-secondary.jpg      original supplied file, unmodified
@@ -39,7 +39,9 @@ lord-sai-sip/
 │   ├── lord-sai-secondary-220.jpg  resized for header / footer
 │   ├── nj-wealth.jpg               original supplied file, unmodified
 │   ├── nj-wealth-540.jpg           resized for the trust section
-│   └── nj-wealth-300.jpg           resized for header / footer
+│   ├── nj-wealth-300.jpg           resized for header / footer
+│   ├── Lord-Sai-SIP-Wealth-Chart.pdf  the printed SIP chart, web-optimised (1.1 MB)
+│   └── sip-wealth-chart-220/440.jpg   preview of that chart for its download card
 ├── tests/
 │   ├── calculator.test.js          SIP maths, run: node tests/calculator.test.js
 │   ├── integration.test.js         full DOM test (needs jsdom)
@@ -105,6 +107,15 @@ phone number you have not supplied, and will not link to a policy page that does
 step-up, and the amount/duration shown first) — keep `rate` and `stepUp` equal to the
 printed chart. `distributor` sets the name, ARN and mobile shown beneath it; an empty
 field is not rendered.
+
+`whatsappChat` is the number behind the floating WhatsApp button and the WhatsApp
+pill under the growth section (digits only, with country code). The chat opens with
+a short greeting pre-filled in the visitor's language. Leave it `""` to hide both.
+It is separate from `whatsappNumber`, which only changes the enquiry form.
+
+The chart PDF is a web copy of the supplied 18 MB Photoshop export: the same single
+A3 page, re-encoded at about 212 dpi so it opens quickly on a phone. To replace it,
+overwrite `assets/Lord-Sai-SIP-Wealth-Chart.pdf` with a file of the same name.
 
 ---
 

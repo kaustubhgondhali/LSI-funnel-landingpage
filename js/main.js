@@ -70,6 +70,7 @@
     renderReturns();
     renderCopyright();
     renderContact();
+    renderWhatsApp();
 
     if (CFG.persistLanguage) {
       try { localStorage.setItem(LS_KEY, lang); } catch (e) { /* storage unavailable */ }
@@ -611,6 +612,17 @@
     if (el) el.textContent = t("footer.copyright", {
       year: new Date().getFullYear(),
       brand: CFG.brandName || "Lord Sai"
+    });
+  }
+
+  /* WhatsApp chat buttons: hidden unless a valid number is configured. The
+     greeting is pre-filled in the visitor's current language. */
+  function renderWhatsApp() {
+    var num = String(CFG.whatsappChat || "").replace(/\D/g, "");
+    var ok = /^\d{8,15}$/.test(num);
+    $$("[data-wa]").forEach(function (a) {
+      a.hidden = !ok;
+      if (ok) a.href = "https://wa.me/" + num + "?text=" + encodeURIComponent(t("wa.msg"));
     });
   }
 

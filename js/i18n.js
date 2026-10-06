@@ -107,6 +107,20 @@ en: {
   "returns.cta1": "Get My Personal SIP Plan",
   "returns.cta2": "Try My Own Numbers",
 
+  "chart.free": "Free",
+  "chart.eyebrow": "1-page PDF · no sign-up",
+  "chart.title": "The Complete SIP Wealth Chart",
+  "chart.text": "This table shows one amount. The full chart shows all five — ₹2,000 to ₹20,000 a month, 5 to 30 years, regular SIP vs 10% yearly step-up — on a single page you can save, print or share with your family.",
+  "chart.b1": "30 ready-worked combinations",
+  "chart.b2": "Regular vs step-up, side by side",
+  "chart.b3": "Save it, print it, share it",
+  "chart.cta": "Open the Free SIP Chart",
+  "chart.note": "PDF · 1.1 MB · opens in a new tab · illustration at an assumed 12% p.a., not a guaranteed return",
+
+  "wa.float": "Chat on WhatsApp",
+  "wa.pill": "WhatsApp",
+  "wa.msg": "Hello! I visited the Lord Sai SIP page and would like to know more about starting an SIP.",
+
   /* --- Section 3: Why people struggle ------------------------------------- */
   "why.eyebrow": "Why it happens",
   "why.h2": "Why Building Wealth Often Feels Harder Than It Should",
@@ -449,6 +463,20 @@ hi: {
   "returns.cta1": "मेरी व्यक्तिगत एसआईपी योजना पाएँ",
   "returns.cta2": "अपने आँकड़े आज़माएँ",
 
+  "chart.free": "मुफ़्त",
+  "chart.eyebrow": "1 पेज की PDF · साइन-अप ज़रूरी नहीं",
+  "chart.title": "संपूर्ण एसआईपी वेल्थ चार्ट",
+  "chart.text": "यह तालिका एक राशि दिखाती है। पूरा चार्ट पाँचों राशियाँ दिखाता है — ₹2,000 से ₹20,000 प्रति माह, 5 से 30 वर्ष, नियमित एसआईपी बनाम 10% वार्षिक स्टेप-अप — एक ही पेज पर, जिसे आप सेव, प्रिंट या अपने परिवार के साथ शेयर कर सकते हैं।",
+  "chart.b1": "30 तैयार गणनाएँ",
+  "chart.b2": "नियमित और स्टेप-अप, आमने-सामने",
+  "chart.b3": "सेव करें, प्रिंट करें, शेयर करें",
+  "chart.cta": "मुफ़्त एसआईपी चार्ट खोलें",
+  "chart.note": "PDF · 1.1 MB · नए टैब में खुलेगा · 12% वार्षिक मानी गई प्रतिफल दर पर उदाहरण, गारंटीकृत प्रतिफल नहीं",
+
+  "wa.float": "व्हॉट्सऐप पर चैट करें",
+  "wa.pill": "व्हॉट्सऐप",
+  "wa.msg": "नमस्ते! मैंने लॉर्ड साई का एसआईपी पेज देखा है। मुझे एसआईपी शुरू करने के बारे में और जानकारी चाहिए।",
+
   "why.eyebrow": "ऐसा क्यों होता है",
   "why.h2": "संपत्ति बनाना अक्सर ज़रूरत से ज़्यादा कठिन क्यों लगता है",
   "why.sub": "ये कुछ ऐसे कारण हैं जिनका ज़िक्र लोग आम तौर पर करते हैं। ये सभी पर लागू नहीं होते, और इन्हें पहचान लेना ही आमतौर पर पहला उपयोगी क़दम होता है।",
@@ -777,6 +805,20 @@ mr: {
   "returns.dist.mob": "मो.",
   "returns.cta1": "माझी वैयक्तिक एसआयपी योजना मिळवा",
   "returns.cta2": "माझे स्वतःचे आकडे वापरून पाहा",
+
+  "chart.free": "मोफत",
+  "chart.eyebrow": "1 पानाची PDF · साइन-अपची गरज नाही",
+  "chart.title": "संपूर्ण एसआयपी वेल्थ चार्ट",
+  "chart.text": "ही तालिका एक रक्कम दाखवते. संपूर्ण चार्ट पाचही रकमा दाखवतो — दरमहा ₹2,000 ते ₹20,000, 5 ते 30 वर्षे, नियमित एसआयपी विरुद्ध 10% वार्षिक स्टेप-अप — एकाच पानावर, जे तुम्ही सेव्ह, प्रिंट किंवा कुटुंबासोबत शेअर करू शकता.",
+  "chart.b1": "30 तयार गणना",
+  "chart.b2": "नियमित आणि स्टेप-अप, शेजारी शेजारी",
+  "chart.b3": "सेव्ह करा, प्रिंट करा, शेअर करा",
+  "chart.cta": "मोफत एसआयपी चार्ट उघडा",
+  "chart.note": "PDF · 1.1 MB · नवीन टॅबमध्ये उघडेल · 12% वार्षिक गृहीत परताव्यावर आधारित उदाहरण, हमीचा परतावा नाही",
+
+  "wa.float": "व्हॉट्सॲपवर चॅट करा",
+  "wa.pill": "व्हॉट्सॲप",
+  "wa.msg": "नमस्कार! मी लॉर्ड साईचे एसआयपी पान पाहिले. मला एसआयपी सुरू करण्याबद्दल अधिक माहिती हवी आहे.",
 
   "why.eyebrow": "असे का होते",
   "why.h2": "संपत्ती उभारणे गरजेपेक्षा अवघड का वाटते",
