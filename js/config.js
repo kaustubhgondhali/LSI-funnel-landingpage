@@ -7,6 +7,18 @@
    rather than pretending something works.
    ========================================================================== */
 
+/* ---------------------------------------------------------------------------
+   0. API ADDRESS  — the small server in /server that saves to MySQL
+   ---------------------------------------------------------------------------
+   While you test with Live Server (127.0.0.1:5500) the page talks to the API
+   running on your own PC (server/start.bat). On the live site it uses
+   LS_LIVE_API — leave that empty until the API is hosted, and the form keeps
+   telling visitors honestly that it cannot submit yet.
+--------------------------------------------------------------------------- */
+var LS_LOCAL_API = "http://127.0.0.1:5000";
+var LS_LIVE_API  = "";     // e.g. "https://lordsai-sip-api.onrender.com" — no trailing slash
+var LS_API = /^(localhost|127\.0\.0\.1)$/.test(location.hostname) ? LS_LOCAL_API : LS_LIVE_API;
+
 window.LS_CONFIG = {
 
   /* ---------------------------------------------------------------------------
@@ -31,7 +43,12 @@ window.LS_CONFIG = {
      normally but show an honest "cannot be submitted yet" message on submit
      (and offer the WhatsApp fallback below, if configured).
   --------------------------------------------------------------------------- */
-  enquiryEndpoint: "",
+  enquiryEndpoint: LS_API ? LS_API + "/api/enquiry" : "",
+
+  /* Anonymous visit and click tracking (page views, chart PDF opens, WhatsApp
+     and enquiry-button clicks) — saved to the `events` table. No names,
+     numbers or cookies. Empty = off. */
+  eventsEndpoint: LS_API ? LS_API + "/api/event" : "",
 
   /* Extra non-secret headers for the POST, if your endpoint needs them. */
   enquiryHeaders: {},

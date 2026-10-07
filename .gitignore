@@ -1,0 +1,5 @@
+# API secrets and local Python environment — never commit these
+server/.env
+server/.venv/
+__pycache__/
+*.pyc

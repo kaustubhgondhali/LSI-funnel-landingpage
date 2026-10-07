@@ -46,6 +46,18 @@ lord-sai-sip/
 │   ├── calculator.test.js          SIP maths, run: node tests/calculator.test.js
 │   ├── integration.test.js         full DOM test (needs jsdom)
 │   └── reference.py                independent Python check of the maths
+├── database/                       the MySQL database, as plain SQL (§10)
+│   ├── 01_create_database.sql      builds everything from scratch: database, tables, views, user
+│   ├── 02_sample_data.sql          optional example rows (+ a clean-up block)
+│   └── 03_useful_queries.sql       call-back list, reports, follow-up updates, Excel export
+├── server/                         the API that saves enquiries and clicks to MySQL (§10)
+│   ├── setup.bat                   one-time setup: packages, runs 01_create_database.sql, .env
+│   ├── start.bat                   starts the API on http://127.0.0.1:5000
+│   ├── app.py                      the API (Flask)
+│   ├── setup_db.py                 run by setup.bat
+│   ├── test_api.py                 API tests
+│   ├── requirements.txt
+│   └── .env.example                settings template (.env itself is never committed)
 └── README.md
 ```
 
@@ -58,12 +70,12 @@ pretends otherwise. Open `js/config.js` and set one of:
 
 **Option A — your own backend (recommended)**
 
-```js
-enquiryEndpoint: "/api/enquiry",
-```
+The `server/` folder is that backend: it saves each enquiry into MySQL. See §10 for
+setup. `config.js` already points the form at it — the API on your own PC while you test
+with Live Server, and `LS_LIVE_API` on the live site once the API is hosted.
 
-It must accept `POST` with `Content-Type: application/json` and return **HTTP 2xx on
-success**. The body sent is:
+Any other backend works too: set `enquiryEndpoint` to its URL. It must accept `POST`
+with `Content-Type: application/json` and return **HTTP 2xx on success**. The body sent is:
 
 ```json
 {
@@ -73,7 +85,9 @@ success**. The body sent is:
   "contactMethod": "whatsapp", "contactMethodLabel": "WhatsApp",
   "contactTime": "evening", "contactTimeLabel": "Evening (4 pm – 8 pm)",
   "consent": true, "language": "en",
-  "pageUrl": "https://...", "submittedAt": "2026-10-02T10:30:00.000Z"
+  "pageUrl": "https://...", "submittedAt": "2026-10-02T10:30:00.000Z",
+  "referrer": "", "utmSource": "instagram", "utmMedium": "", "utmCampaign": "",
+  "sessionId": "32 hex characters — links the lead to that visit's clicks"
 }
 ```
 
@@ -260,3 +274,115 @@ Current Chrome, Edge, Firefox and Safari, mobile and desktop. Uses `fetch`,
 CSS custom properties, `:has()` (progressive — the radio highlight is cosmetic) and
 `backdrop-filter` (cosmetic). No polyfills needed. If `localStorage` is blocked, the
 page still works and simply defaults to English.
+
+---
+
+## 10. Saving enquiries and clicks to MySQL
+
+A web page cannot talk to MySQL directly, so a small API (`server/`, Python Flask) sits
+in between: the page sends it each enquiry and each click, and it writes them to MySQL.
+
+```
+landing page ──POST──▶ server/app.py ──▶ MySQL database `lordsai_sip`
+```
+
+### Set up on your PC (once)
+
+Make sure MySQL is running (Windows service **MySQL80**), then build the database in
+**one** of two ways:
+
+**Way 1 — automatic (easiest).** Double-click **`server/setup.bat`**. Press Enter to accept
+each default, then type your MySQL **root** password (hidden while you type, used once,
+never saved). It installs the Python packages, runs `database/01_create_database.sql`,
+creates the MySQL user `lordsai_app` with a random password, and writes `server/.env`.
+
+**Way 2 — by hand in MySQL Workbench.**
+1. Connect as root → *File → Open SQL Script…* → `database/01_create_database.sql`.
+2. In STEP 5 of the file, replace `CHANGE_ME_Strong#Pass1` (two places) with your own password.
+3. Press the lightning bolt (*Execute all*). The last result lists the 6 tables and 4 views.
+4. Copy `server/.env.example` to `server/.env` and set `DB_PASSWORD` to that password.
+5. Install the API's packages once: in a terminal, `cd server`, then
+   `python -m venv .venv` and `.venv\Scripts\python -m pip install -r requirements.txt`.
+6. Optional: run `database/02_sample_data.sql` to see example rows in every report.
+   Remove them before going live with the clean-up block at the end of that file.
+
+Then, either way:
+
+1. Double-click **`server/start.bat`** and leave the window open. Check
+   <http://127.0.0.1:5000/api/health> shows `"database":"connected"`.
+2. Open the page with Live Server and submit the form. The row appears in MySQL Workbench
+   under `lordsai_sip → enquiries`.
+
+Both ways are safe to repeat: nothing that exists is dropped and no data is deleted.
+(`setup.bat` also gives `lordsai_app` a fresh password and rewrites `.env`.)
+
+### Database design
+
+```
+goals ─────────────┐
+investment_ranges ─┤  lookup tables (the form's choices,
+contact_methods ───┤  with readable labels)
+contact_times ─────┘
+        │  foreign keys: an enquiry can only use a listed choice
+        ▼
+enquiries ── session_id ──▶ events        (one visit = one session id)
+```
+
+The database enforces its own rules as well as the API: an unknown goal, range, contact
+method or time is refused (foreign keys), so are `consent = 0`, a language other than
+en / hi / mr, and an unknown event type (check constraints). The website's user
+`lordsai_app` has only `SELECT` and `INSERT` on this one database.
+
+### What is stored
+
+| Table / view | What it holds |
+|---|---|
+| `enquiries` | Every form submission: name, mobile, email, goal, amount range, contact method and time, consent, language, and where the visitor came from (referrer and `utm_` campaign tags). `status` (new / contacted / converted / not_interested) and `notes` are for you to update as you follow up. |
+| `events` | Anonymous activity: `page_view`, `pdf_open` (chart PDF), `whatsapp_click`, `cta_click` (buttons that lead to the form — `label` says which). No names, numbers, cookies or IP addresses. |
+| `goals`, `investment_ranges`, `contact_methods`, `contact_times` | The form's choices: the `code` the website sends and the `label` shown in reports. |
+| `v_new_enquiries` | Leads still marked `new`, newest first, with readable labels — your call-back list. |
+| `v_daily_summary` | Per day: visitors, page views, PDF opens, WhatsApp clicks, enquiry-button clicks, enquiries. |
+| `v_button_clicks` | Which buttons are clicked most. |
+| `v_lead_sources` | Enquiries per source (Instagram, Facebook, direct…), how many were contacted and converted, and the conversion %. |
+
+`database/03_useful_queries.sql` has ready-made queries for daily use: today's leads,
+warmest leads (opened the chart before enquiring), marking a lead contacted or converted,
+and an export for Excel.
+
+**Campaign tracking:** add tags to the links you share, e.g.
+`https://kaustubhgondhali.github.io/LSI-funnel-landingpage/?utm_source=instagram&utm_campaign=sip-oct`.
+Every enquiry from that visit records `instagram` / `sip-oct` as its source.
+
+Mention the visit statistics in your privacy policy when you publish one.
+
+### Putting it live
+
+GitHub Pages only serves files, and the MySQL on your PC is not reachable from the
+internet. For the live site the API and its database must be hosted, for example:
+
+- **Railway** — host `server/` and a MySQL database together; or
+- **Render** (web service) with a hosted MySQL such as Aiven; or
+- any VPS with Python and MySQL.
+
+Then:
+
+1. Create the tables on the hosted MySQL:
+   `python setup_db.py --host <db-host> --port <port> --admin <admin-user>`
+   (or run `database/01_create_database.sql` in the host's SQL console, with your own
+   password in STEP 5 — on a hosted database the user's host is usually `'%'`).
+2. On the host, set the settings from `.env.example` as environment variables, plus
+   `HOST=0.0.0.0` and `TRUST_PROXY=1`. Start command:
+   `waitress-serve --port=$PORT app:app`
+3. In `js/config.js`, set `LS_LIVE_API` to the API's address
+   (e.g. `"https://lordsai-sip-api.onrender.com"`), push, and submit a test enquiry.
+
+### Tests
+
+```bash
+cd server
+.venv\Scripts\python test_api.py
+```
+
+The checks on input, cross-site protection and error handling need no database. Once
+`.env` exists, the tests also send an enquiry and clicks through the real API into your
+tables, read them back, and roll back, so no test rows are kept.

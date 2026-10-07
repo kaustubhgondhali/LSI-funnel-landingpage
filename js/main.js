@@ -757,7 +757,13 @@
       consent:         $("#fConsent").checked,
       language:        currentLang,
       pageUrl:         window.location.href,
-      submittedAt:     new Date().toISOString()
+      submittedAt:     new Date().toISOString(),
+      /* Where this visit came from, so a lead can be traced to its campaign */
+      referrer:        visit.src.referrer,
+      utmSource:       visit.src.utmSource,
+      utmMedium:       visit.src.utmMedium,
+      utmCampaign:     visit.src.utmCampaign,
+      sessionId:       visit.id
     };
   }
 
@@ -868,6 +874,155 @@
   }
 
   /* ===========================================================================
+     7b. VISIT & CLICK TRACKING  (anonymous — no names, numbers or cookies)
+     ---------------------------------------------------------------------------
+     Sends page views and clicks on the chart PDF, WhatsApp and enquiry buttons
+     to CFG.eventsEndpoint (the `events` table), so you can see which buttons
+     bring enquiries. Off when the endpoint is empty.
+     A random id groups one visit; it lives in sessionStorage only, ends when
+     the tab closes, and identifies nobody.
+     ======================================================================== */
+  var visit = (function () {
+    var id = "", src = null;
+    try {
+      id  = sessionStorage.getItem("lordsai.sip.sid") || "";
+      src = JSON.parse(sessionStorage.getItem("lordsai.sip.src") || "null");
+    } catch (e) { /* storage unavailable — a fresh id below is fine */ }
+
+    if (!/^[a-f0-9]{32}$/.test(id)) {
+      var bytes = new Uint8Array(16);
+      if (window.crypto && crypto.getRandomValues) crypto.getRandomValues(bytes);
+      else for (var b = 0; b < 16; b++) bytes[b] = Math.floor(Math.random() * 256);
+      id = Array.prototype.map.call(bytes, function (n) { return (n < 16 ? "0" : "") + n.toString(16); }).join("");
+    }
+    /* First touch wins: campaign tags from the landing URL are kept for the
+       whole visit, so an enquiry made later is still credited to them */
+    if (!src || typeof src !== "object") {
+      var q = {};
+      window.location.search.replace(/^\?/, "").split("&").forEach(function (pair) {
+        var kv = pair.split("=");
+        if (kv[0]) { try { q[kv[0]] = decodeURIComponent((kv[1] || "").replace(/\+/g, " ")); } catch (e) { /* bad escape */ } }
+      });
+      var ref = document.referrer || "";
+      if (ref.indexOf(window.location.origin) === 0) ref = "";   /* our own page is not a source */
+      src = { referrer: ref, utmSource: q.utm_source || "", utmMedium: q.utm_medium || "", utmCampaign: q.utm_campaign || "" };
+    }
+    try {
+      sessionStorage.setItem("lordsai.sip.sid", id);
+      sessionStorage.setItem("lordsai.sip.src", JSON.stringify(src));
+    } catch (e) { /* storage unavailable */ }
+    return { id: id, src: src };
+  })();
+
+  function track(type, label) {
+    var url = CFG.eventsEndpoint;
+    if (!url) return;
+    var w = window.innerWidth || 0;
+    var body = JSON.stringify({
+      type: type, label: label || "", language: currentLang,
+      device: w < 720 ? "mobile" : w < 1040 ? "tablet" : "desktop",
+      pageUrl: window.location.href.split("#")[0], sessionId: visit.id,
+      referrer: visit.src.referrer, utmSource: visit.src.utmSource,
+      utmMedium: visit.src.utmMedium, utmCampaign: visit.src.utmCampaign
+    });
+    try {
+      /* Sent as text/plain: a "simple" request needs no CORS preflight, and
+         sendBeacon still delivers it while the PDF or WhatsApp is opening */
+      if (navigator.sendBeacon && navigator.sendBeacon(url, new Blob([body], { type: "text/plain;charset=UTF-8" }))) return;
+      fetch(url, { method: "POST", body: body, keepalive: true, mode: "no-cors",
+                   headers: { "Content-Type": "text/plain;charset=UTF-8" } }).catch(function () {});
+    } catch (e) { /* tracking must never break the page */ }
+  }
+
+  function bindTracking() {
+    if (!CFG.eventsEndpoint) return;
+    track("page_view");
+    document.addEventListener("click", function (e) {
+      var a = e.target.closest && e.target.closest("a");
+      if (!a) return;
+      var href = a.getAttribute("href") || "";
+      if (a.hasAttribute("data-wa")) {
+        track("whatsapp_click", a.classList.contains("wa-float") ? "floating" : "growth-section");
+      } else if (/\.pdf(\?|#|$)/i.test(href)) {
+        track("pdf_open", a.classList.contains("rt-pdf-thumb") ? "chart-preview"
+                        : a.classList.contains("chartv-download") ? "chart-download" : "chart-button");
+      } else if (href === "#enquiry") {
+        /* The button's text key says which one it was, e.g. hero.cta2 or returns.cta1 */
+        track("cta_click", a.getAttribute("data-i18n") || "enquiry-link");
+      }
+    }, true);
+  }
+
+  /* ===========================================================================
+     7b. CHART VIEWER
+     The chart links open the chart on this page instead of a new tab, so the
+     Back button, Esc and the phone's own back gesture all return to the page.
+     Ctrl/Cmd/middle-click still opens the PDF itself in a new tab.
+     ======================================================================== */
+  function bindChartViewer() {
+    var viewer = $("#chartViewer");
+    if (!viewer) return;
+    var img = $("#chartvImg"), body = $("#chartvBody"), backBtn = $("#chartvBack");
+    var opener = null, pushed = false;
+
+    function open(from) {
+      if (!viewer.hidden) return;
+      opener = from;
+      if (!img.getAttribute("src")) img.setAttribute("src", img.getAttribute("data-src"));   /* load on first open only */
+      viewer.classList.remove("is-zoomed");
+      viewer.hidden = false;
+      body.scrollTop = 0; body.scrollLeft = 0;
+      document.documentElement.classList.add("chartv-open");
+      try { history.pushState({ chartViewer: true }, ""); pushed = true; } catch (e) { pushed = false; }
+      backBtn.focus();
+    }
+
+    function close() {
+      if (viewer.hidden) return;
+      viewer.hidden = true;
+      document.documentElement.classList.remove("chartv-open");
+      if (opener) opener.focus({ preventScroll: true });
+    }
+
+    /* Undo our own history entry when there is one; popstate then closes the viewer */
+    function goBack() {
+      if (pushed) { pushed = false; history.back(); }
+      else close();
+    }
+
+    window.addEventListener("popstate", function () { pushed = false; close(); });
+    backBtn.addEventListener("click", goBack);
+
+    $$("[data-chart-viewer]").forEach(function (a) {
+      a.addEventListener("click", function (e) {
+        if (e.button !== 0 || e.ctrlKey || e.metaKey || e.shiftKey || e.altKey) return;
+        e.preventDefault();
+        /* the thumbnail is hidden from keyboard users, so focus returns to the button */
+        open(a.classList.contains("rt-pdf-thumb") ? $(".rt-pdf-btn") : a);
+      });
+    });
+
+    /* Esc closes; Tab stays inside the viewer while it is open */
+    viewer.addEventListener("keydown", function (e) {
+      if (e.key === "Escape") { e.preventDefault(); goBack(); return; }
+      if (e.key !== "Tab") return;
+      var f = $$("button, a[href]", viewer), first = f[0], last = f[f.length - 1];
+      if (e.shiftKey && document.activeElement === first) { e.preventDefault(); last.focus(); }
+      else if (!e.shiftKey && document.activeElement === last) { e.preventDefault(); first.focus(); }
+    });
+
+    /* Tap to zoom, keeping the tapped spot near the centre of the screen */
+    img.addEventListener("click", function (e) {
+      var r = img.getBoundingClientRect();
+      var rx = (e.clientX - r.left) / r.width, ry = (e.clientY - r.top) / r.height;
+      if (!viewer.classList.toggle("is-zoomed")) return;
+      var z = img.getBoundingClientRect(), b = body.getBoundingClientRect();
+      body.scrollLeft += (z.left - b.left) + rx * z.width  - body.clientWidth  / 2;
+      body.scrollTop  += (z.top  - b.top)  + ry * z.height - body.clientHeight / 2;
+    });
+  }
+
+  /* ===========================================================================
      8. BOOT
      ======================================================================== */
   function init() {
@@ -878,6 +1033,8 @@
     bindScroll();
     bindFaq();
     bindForm();
+    bindTracking();
+    bindChartViewer();
     renderCopyright();
     renderContact();
   }

@@ -35,6 +35,8 @@ en: {
   "a11y.rtBars": "Comparison of the amount invested and the estimated value, for a regular SIP and a step-up SIP",
   "a11y.logoLordSai": "Lord Sai Investment & Share Market Academy logo",
   "a11y.logoNj": "NJ Wealth — Financial Products Distributors Network logo",
+  "a11y.logoIso": "ISO — International Organization for Standardization logo",
+  "a11y.logoMsme": "MSME — Micro, Small & Medium Enterprises, Government of India logo",
 
   "nav.returns": "SIP Growth",
   "nav.problems": "Problems",
@@ -115,7 +117,11 @@ en: {
   "chart.b2": "Regular vs step-up, side by side",
   "chart.b3": "Save it, print it, share it",
   "chart.cta": "Open the Free SIP Chart",
-  "chart.note": "PDF · 1.1 MB · opens in a new tab · illustration at an assumed 12% p.a., not a guaranteed return",
+  "chart.note": "PDF · 1.1 MB · opens on this page, with a download option · illustration at an assumed 12% p.a., not a guaranteed return",
+  "chartView.back": "Back to page",
+  "chartView.download": "Download PDF",
+  "chartView.hint": "Tap or click the chart to zoom in or out. Illustration at an assumed 12% p.a., not a guaranteed return.",
+  "chartView.alt": "SIP wealth chart: monthly SIPs of ₹2,000 to ₹20,000 over 5 to 30 years, regular SIP vs 10% yearly step-up, at an assumed 12% p.a.",
 
   "wa.float": "Chat on WhatsApp",
   "wa.pill": "WhatsApp",
@@ -366,7 +372,9 @@ en: {
   "footer.risk": "Mutual Fund investments are subject to market risks. Read all scheme-related documents carefully.",
   "footer.disclaimer": "All figures shown on this page are illustrative and generated from assumptions that you can change. They are not forecasts, not historical performance, and not a guarantee of any outcome. Lord Sai does not promise returns, assured income or the achievement of any financial goal.",
   "footer.copyright": "© {year} {brand}. All rights reserved.",
-  "footer.logosNote": "Logos are the property of their respective owners."
+  "footer.logosNote": "Logos are the property of their respective owners.",
+  "footer.certTitle": "ISO-Certified",
+  "footer.certNote": "has been independently assessed and found to be in compliance with the requirement of the standard:"
 },
 
 /* ===========================================================================
@@ -392,6 +400,8 @@ hi: {
   "a11y.rtBars": "नियमित एसआईपी और स्टेप-अप एसआईपी के लिए निवेशित राशि और अनुमानित मूल्य की तुलना",
   "a11y.logoLordSai": "लॉर्ड साईं इन्वेस्टमेंट एंड शेयर मार्केट अकैडमी का लोगो",
   "a11y.logoNj": "NJ Wealth — फाइनेंशियल प्रोडक्ट्स डिस्ट्रीब्यूटर्स नेटवर्क का लोगो",
+  "a11y.logoIso": "ISO — अंतर्राष्ट्रीय मानकीकरण संगठन का लोगो",
+  "a11y.logoMsme": "MSME — सूक्ष्म, लघु एवं मध्यम उद्यम, भारत सरकार का लोगो",
 
   "nav.returns": "एसआईपी वृद्धि",
   "nav.problems": "समस्याएँ",
@@ -471,7 +481,11 @@ hi: {
   "chart.b2": "नियमित और स्टेप-अप, आमने-सामने",
   "chart.b3": "सेव करें, प्रिंट करें, शेयर करें",
   "chart.cta": "मुफ़्त एसआईपी चार्ट खोलें",
-  "chart.note": "PDF · 1.1 MB · नए टैब में खुलेगा · 12% वार्षिक मानी गई प्रतिफल दर पर उदाहरण, गारंटीकृत प्रतिफल नहीं",
+  "chart.note": "PDF · 1.1 MB · इसी पेज पर खुलेगा, डाउनलोड विकल्प के साथ · 12% वार्षिक मानी गई प्रतिफल दर पर उदाहरण, गारंटीकृत प्रतिफल नहीं",
+  "chartView.back": "पेज पर वापस जाएँ",
+  "chartView.download": "PDF डाउनलोड करें",
+  "chartView.hint": "ज़ूम इन या आउट करने के लिए चार्ट पर टैप या क्लिक करें। 12% वार्षिक मानी गई प्रतिफल दर पर उदाहरण, गारंटीकृत प्रतिफल नहीं।",
+  "chartView.alt": "एसआईपी वेल्थ चार्ट: ₹2,000 से ₹20,000 मासिक एसआईपी, 5 से 30 वर्ष, नियमित एसआईपी बनाम 10% वार्षिक स्टेप-अप, 12% वार्षिक मानी गई दर पर",
 
   "wa.float": "व्हॉट्सऐप पर चैट करें",
   "wa.pill": "व्हॉट्सऐप",
@@ -709,7 +723,9 @@ hi: {
   "footer.risk": "म्यूचुअल फंड निवेश बाज़ार जोखिमों के अधीन हैं। योजना संबंधी सभी दस्तावेज़ों को ध्यानपूर्वक पढ़ें।",
   "footer.disclaimer": "इस पृष्ठ पर दिखाए गए सभी आँकड़े उदाहरणात्मक हैं और ऐसी धारणाओं से बने हैं जिन्हें आप बदल सकते हैं। ये न पूर्वानुमान हैं, न पिछला प्रदर्शन, और न ही किसी परिणाम की गारंटी। लॉर्ड साईं प्रतिफल, निश्चित आय या किसी वित्तीय लक्ष्य की प्राप्ति का वादा नहीं करता।",
   "footer.copyright": "© {year} {brand}. सर्वाधिकार सुरक्षित।",
-  "footer.logosNote": "लोगो संबंधित स्वामियों की संपत्ति हैं।"
+  "footer.logosNote": "लोगो संबंधित स्वामियों की संपत्ति हैं।",
+  "footer.certTitle": "ISO-प्रमाणित",
+  "footer.certNote": "का स्वतंत्र रूप से मूल्यांकन किया गया है और इसे मानक की आवश्यकताओं के अनुरूप पाया गया है:"
 },
 
 /* ===========================================================================
@@ -735,6 +751,8 @@ mr: {
   "a11y.rtBars": "नियमित एसआयपी आणि स्टेप-अप एसआयपीसाठी गुंतवलेली रक्कम आणि अंदाजित मूल्य यांची तुलना",
   "a11y.logoLordSai": "लॉर्ड साई इन्व्हेस्टमेंट अँड शेअर मार्केट अकॅडमीचा लोगो",
   "a11y.logoNj": "NJ Wealth — फायनान्शियल प्रॉडक्ट्स डिस्ट्रिब्युटर्स नेटवर्कचा लोगो",
+  "a11y.logoIso": "ISO — आंतरराष्ट्रीय मानकीकरण संस्थेचा लोगो",
+  "a11y.logoMsme": "MSME — सूक्ष्म, लघु व मध्यम उद्योग, भारत सरकारचा लोगो",
 
   "nav.returns": "एसआयपी वाढ",
   "nav.problems": "अडचणी",
@@ -814,7 +832,11 @@ mr: {
   "chart.b2": "नियमित आणि स्टेप-अप, शेजारी शेजारी",
   "chart.b3": "सेव्ह करा, प्रिंट करा, शेअर करा",
   "chart.cta": "मोफत एसआयपी चार्ट उघडा",
-  "chart.note": "PDF · 1.1 MB · नवीन टॅबमध्ये उघडेल · 12% वार्षिक गृहीत परताव्यावर आधारित उदाहरण, हमीचा परतावा नाही",
+  "chart.note": "PDF · 1.1 MB · याच पानावर उघडेल, डाउनलोड पर्यायासह · 12% वार्षिक गृहीत परताव्यावर आधारित उदाहरण, हमीचा परतावा नाही",
+  "chartView.back": "पानावर परत जा",
+  "chartView.download": "PDF डाउनलोड करा",
+  "chartView.hint": "झूम इन किंवा आउट करण्यासाठी चार्टवर टॅप किंवा क्लिक करा. 12% वार्षिक गृहीत परताव्यावर आधारित उदाहरण, हमीचा परतावा नाही.",
+  "chartView.alt": "एसआयपी वेल्थ चार्ट: दरमहा ₹2,000 ते ₹20,000 एसआयपी, 5 ते 30 वर्षे, नियमित एसआयपी विरुद्ध 10% वार्षिक स्टेप-अप, 12% वार्षिक गृहीत परताव्यावर",
 
   "wa.float": "व्हॉट्सॲपवर चॅट करा",
   "wa.pill": "व्हॉट्सॲप",
@@ -1052,7 +1074,9 @@ mr: {
   "footer.risk": "म्युच्युअल फंड गुंतवणूक बाजार जोखमीच्या अधीन आहे. योजनेसंबंधीची सर्व कागदपत्रे काळजीपूर्वक वाचा.",
   "footer.disclaimer": "या पानावर दाखवलेले सर्व आकडे उदाहरणादाखल असून तुम्ही बदलू शकता अशा गृहीतकांवरून तयार झाले आहेत. ते अंदाज नाहीत, मागील कामगिरी नाहीत आणि कोणत्याही परिणामाची हमीही नाहीत. लॉर्ड साई परतावा, निश्चित उत्पन्न किंवा कोणतेही आर्थिक उद्दिष्ट पूर्ण होण्याचे आश्वासन देत नाही.",
   "footer.copyright": "© {year} {brand}. सर्व हक्क राखीव.",
-  "footer.logosNote": "लोगो संबंधित मालकांची मालमत्ता आहेत."
+  "footer.logosNote": "लोगो संबंधित मालकांची मालमत्ता आहेत.",
+  "footer.certTitle": "ISO-प्रमाणित",
+  "footer.certNote": "यांचे स्वतंत्रपणे मूल्यांकन करण्यात आले असून ते पुढील मानकाच्या आवश्यकतांची पूर्तता करत असल्याचे आढळले आहे:"
 }
 
 };

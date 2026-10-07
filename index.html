@@ -79,7 +79,7 @@
     <div class="hero-copy">
       <span class="logo-nj logo-nj--hero">
         <img src="assets/nj-wealth-540.jpg" srcset="assets/nj-wealth-540.jpg 540w, assets/nj-wealth.jpg 1080w"
-             sizes="(max-width:720px) 230px, 320px" width="540" height="257"
+             sizes="320px" width="540" height="257"
              alt="NJ Wealth — Financial Products Distributors Network"
              data-i18n-attr="alt:a11y.logoNj">
       </span>
@@ -241,7 +241,7 @@
     <!-- Free chart download — the printed poster as a 1-page PDF -->
     <aside class="rt-pdf" aria-labelledby="rtPdfTitle">
       <a class="rt-pdf-thumb" href="assets/Lord-Sai-SIP-Wealth-Chart.pdf" target="_blank" rel="noopener"
-         type="application/pdf" tabindex="-1" aria-hidden="true">
+         type="application/pdf" tabindex="-1" aria-hidden="true" data-chart-viewer>
         <img src="assets/sip-wealth-chart-220.jpg" srcset="assets/sip-wealth-chart-220.jpg 220w, assets/sip-wealth-chart-440.jpg 440w"
              sizes="200px" width="220" height="311" loading="lazy" alt="">
         <span class="rt-pdf-badge">PDF</span>
@@ -255,11 +255,11 @@
           <li><svg class="ico" viewBox="0 0 24 24" aria-hidden="true"><path d="M5 12.5l4.2 4.2L19 7"/></svg><span data-i18n="chart.b2">Regular vs step-up, side by side</span></li>
           <li><svg class="ico" viewBox="0 0 24 24" aria-hidden="true"><path d="M5 12.5l4.2 4.2L19 7"/></svg><span data-i18n="chart.b3">Save it, print it, share it</span></li>
         </ul>
-        <a class="btn btn-gold rt-pdf-btn" href="assets/Lord-Sai-SIP-Wealth-Chart.pdf" target="_blank" rel="noopener" type="application/pdf">
+        <a class="btn btn-gold rt-pdf-btn" href="assets/Lord-Sai-SIP-Wealth-Chart.pdf" target="_blank" rel="noopener" type="application/pdf" data-chart-viewer>
           <svg class="ico" viewBox="0 0 24 24" aria-hidden="true"><path d="M14 3H7a2 2 0 00-2 2v14a2 2 0 002 2h10a2 2 0 002-2V8z"/><path d="M14 3v5h5M12 11v6M9.5 14.5L12 17l2.5-2.5"/></svg>
           <span data-i18n="chart.cta">Open the Free SIP Chart</span>
         </a>
-        <p class="rt-pdf-note" data-i18n="chart.note">PDF · 1.1 MB · opens in a new tab · illustration at an assumed 12% p.a., not a guaranteed return</p>
+        <p class="rt-pdf-note" data-i18n="chart.note">PDF · 1.1 MB · opens on this page, with a download option · illustration at an assumed 12% p.a., not a guaranteed return</p>
       </div>
     </aside>
 
@@ -903,6 +903,31 @@
       </div>
     </div>
 
+    <!-- Certification — ISO 9001:2015 + MSME registration -->
+    <section class="foot-cert" aria-labelledby="footCertTitle">
+      <div class="foot-cert-head">
+        <h2 class="foot-cert-title" id="footCertTitle" data-i18n="footer.certTitle">ISO-Certified</h2>
+        <div class="foot-cert-logos">
+          <span class="foot-cert-logo">
+            <img src="assets/iso-logo-160.jpg" width="248" height="160" loading="lazy"
+                 alt="ISO — International Organization for Standardization logo"
+                 data-i18n-attr="alt:a11y.logoIso">
+          </span>
+          <span class="foot-cert-logo">
+            <img src="assets/msme-logo-160.jpg" width="171" height="160" loading="lazy"
+                 alt="MSME — Micro, Small &amp; Medium Enterprises, Government of India logo"
+                 data-i18n-attr="alt:a11y.logoMsme">
+          </span>
+        </div>
+      </div>
+      <address class="foot-cert-address">
+        At – Shreeraj Nagar, Shop No. 37, 1st Floor, Kamtha Road,<br>
+        Near Dr. Gade Hospital, Tal – Uran, Dist – Raigad, PIN – 400702
+      </address>
+      <p class="foot-cert-note" data-i18n="footer.certNote">has been independently assessed and found to be in compliance with the requirement of the standard:</p>
+      <p class="foot-cert-badge">ISO 9001:2015</p>
+    </section>
+
     <p class="foot-disclaimer" data-i18n="footer.disclaimer">All figures shown on this page are illustrative and generated from assumptions that you can change. They are not forecasts, not historical performance, and not a guarantee of any outcome. Lord Sai does not promise returns, assured income or the achievement of any financial goal.</p>
 
     <div class="foot-base">
@@ -911,6 +936,28 @@
     </div>
   </div>
 </footer>
+
+<!-- SIP chart viewer — the PDF's page shown on this page, with a way back.
+     Phones cannot display a PDF inside a page, so the chart is an image; the PDF itself is the download. -->
+<div class="chartv" id="chartViewer" role="dialog" aria-modal="true" aria-labelledby="chartvTitle" hidden>
+  <div class="chartv-bar">
+    <button type="button" class="btn btn-ghost btn-sm chartv-back" id="chartvBack">
+      <svg class="ico" viewBox="0 0 24 24" aria-hidden="true"><path d="M19 12H5M11 6l-6 6 6 6"/></svg>
+      <span data-i18n="chartView.back">Back to page</span>
+    </button>
+    <p class="chartv-title" id="chartvTitle" data-i18n="chart.title">The Complete SIP Wealth Chart</p>
+    <a class="btn btn-gold btn-sm chartv-download" href="assets/Lord-Sai-SIP-Wealth-Chart.pdf" download type="application/pdf">
+      <svg class="ico" viewBox="0 0 24 24" aria-hidden="true"><path d="M12 4v11M7 10.5l5 5 5-5M5 20h14"/></svg>
+      <span data-i18n="chartView.download">Download PDF</span>
+    </a>
+  </div>
+  <div class="chartv-body" id="chartvBody">
+    <img class="chartv-img" id="chartvImg" data-src="assets/sip-wealth-chart-1600.jpg" width="1600" height="2263"
+         alt="SIP wealth chart: monthly SIPs of ₹2,000 to ₹20,000 over 5 to 30 years, regular SIP vs 10% yearly step-up, at an assumed 12% p.a."
+         data-i18n-attr="alt:chartView.alt">
+    <p class="chartv-hint" data-i18n="chartView.hint">Tap or click the chart to zoom in or out. Illustration at an assumed 12% p.a., not a guaranteed return.</p>
+  </div>
+</div>
 
 <!-- Floating WhatsApp chat — number from LS_CONFIG.whatsappChat; hidden when empty -->
 <a class="wa-float" data-wa href="#" target="_blank" rel="noopener" hidden>
